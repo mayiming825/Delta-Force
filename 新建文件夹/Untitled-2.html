@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三角洲账号数据填报</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+        body {
+            background-image: url("p1.jpg");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color:#ffffff;
+        }
+        .wrap {
+            min-height:100vh;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            padding:20px 16px;
+            backdrop-filter: brightness(0.65);
+        }
+        .card {
+            width:100%;
+            max-width:520px;
+            background-color:rgba(22,22,26,0.72);
+            border-radius:16px;
+            padding:32px 28px;
+            border:1px solid rgba(255,255,255,0.08);
+        }
+        .hide {
+            display:none !important;
+        }
+        .title-main {
+            font-size:24px;
+            font-weight:bold;
+            text-align:center;
+            margin-bottom:28px;
+        }
+        .form-item {
+            margin-bottom:18px;
+        }
+        .form-item label {
+            display:block;
+            font-size:16px;
+            margin-bottom:8px;
+            color:#eeeeee;
+        }
+        .form-item input {
+            width:100%;
+            background-color:rgba(45,45,50,0.65);
+            border:1px solid rgba(255,255,255,0.12);
+            border-radius:10px;
+            padding:14px 16px;
+            color:#fff;
+            font-size:16px;
+        }
+        .form-item input::placeholder{
+            color:#999999;
+        }
+        .btn-submit {
+            width:100%;
+            padding:14px;
+            margin-top:12px;
+            background-color:#1f6b3f;
+            color:#ffffff;
+            border:none;
+            border-radius:10px;
+            font-size:17px;
+            cursor:pointer;
+        }
+        .btn-submit:active{
+            background-color:#185431;
+        }
+        .error-tip{
+            text-align:center;
+            color:#ff6b77;
+            margin-top:14px;
+        }
+        .footer-note{
+            margin-top:20px;
+            text-align:center;
+            font-size:14px;
+            color:#cccccc;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <!--密码登录界面-->
+    <div id="loginCard" class="card">
+        <div class="title-main">请输入访问密码</div>
+        <div class="form-item">
+            <input type="password" id="pwdInput" placeholder="请输入密码">
+        </div>
+        <button class="btn-submit" onclick="checkPwd()">进入系统</button>
+        <div class="error-tip" id="pwdErr"></div>
+    </div>
+
+    <!--数据填报主页面-->
+    <div id="fillCard" class="card hide">
+        <div class="title-main">账号信息填报</div>
+
+        <div class="form-item">
+            <label>流动资产</label>
+            <input type="text" id="i1" placeholder="请填写流动资产">
+        </div>
+        <div class="form-item">
+            <label>纯币金额</label>
+            <input type="text" id="i2" placeholder="请填写纯币金额">
+        </div>
+        <div class="form-item">
+            <label>保险</label>
+            <input type="text" id="i3" placeholder="请填写保险">
+        </div>
+        <div class="form-item">
+            <label>刀皮红皮</label>
+            <input type="text" id="i4" placeholder="请填写刀皮红皮">
+        </div>
+        <div class="form-item">
+            <label>体力（是否满级）</label>
+            <input type="text" id="i5" placeholder="体力是否满级">
+        </div>
+        <div class="form-item">
+            <label>负重（是否满级）</label>
+            <input type="text" id="i6" placeholder="负重是否满级">
+        </div>
+        <div class="form-item">
+            <label>仓库六头（满耐数量）</label>
+            <input type="text" id="i7" placeholder="填写满耐数量">
+        </div>
+        <div class="form-item">
+            <label>仓库六甲（满耐数量）</label>
+            <input type="text" id="i8" placeholder="填写满耐数量">
+        </div>
+        <div class="form-item">
+            <label>awm</label>
+            <input type="text" id="i9" placeholder="AWM相关信息">
+        </div>
+        <div class="form-item">
+            <label>红弹数量</label>
+            <input type="text" id="i10" placeholder="红弹数量">
+        </div>
+        <div class="form-item">
+            <label>仓库不能动的</label>
+            <input type="text" id="i11" placeholder="填写仓库锁定物品">
+        </div>
+
+        <button class="btn-submit" onclick="onConfirm()">确认提交</button>
+    </div>
+
+    <!--底部担保提示，全程显示-->
+    <div class="footer-note">本次交易全程由平台担保，请放心操作</div>
+</div>
+
+<script>
+const correctPassword = "xymsh";
+
+//字段列表 id和中文名称一一对应
+const fieldList = [
+    {id:"i1", name:"流动资产"},
+    {id:"i2", name:"纯币金额"},
+    {id:"i3", name:"保险"},
+    {id:"i4", name:"刀皮红皮"},
+    {id:"i5", name:"体力（是否满级）"},
+    {id:"i6", name:"负重（是否满级）"},
+    {id:"i7", name:"仓库六头（满耐数量）"},
+    {id:"i8", name:"仓库六甲（满耐数量）"},
+    {id:"i9", name:"awm"},
+    {id:"i10", name:"红弹数量"},
+    {id:"i11", name:"仓库不能动的"}
+];
+
+//密码校验登录
+function checkPwd(){
+    const inputVal = document.getElementById('pwdInput').value.trim();
+    const errDom = document.getElementById('pwdErr');
+    if(inputVal === correctPassword){
+        document.getElementById('loginCard').classList.add('hide');
+        document.getElementById('fillCard').classList.remove('hide');
+        errDom.innerText = "";
+    }else{
+        errDom.innerText = "密码错误，请重新输入";
+    }
+}
+
+//提交按钮总逻辑
+function onConfirm(){
+    //循环校验所有输入项
+    for(let i = 0; i < fieldList.length; i++){
+        let f = fieldList[i];
+        let inputDom = document.getElementById(f.id);
+        let val = inputDom.value.trim();
+        if(val === ""){
+            alert("请填写【" + f.name + "】项目");
+            inputDom.focus();
+            return;
+        }
+    }
+
+    //全部填完，弹出确认提示
+    const confirmResult = confirm("上传数据以后不可更改，是否确定上传？");
+    if(confirmResult){
+        alert("上传成功，请联系客服");
+        //切回登录页面
+        document.getElementById('fillCard').classList.add('hide');
+        document.getElementById('loginCard').classList.remove('hide');
+        //清空密码输入框
+        document.getElementById('pwdInput').value = "";
+        //清空全部表单
+        fieldList.forEach(function(item){
+            document.getElementById(item.id).value = "";
+        });
+    }
+    //点击取消，直接结束，留在表单页面
+}
+</script>
+</body>
+</html>
